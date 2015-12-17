@@ -140,6 +140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            "useGriddleStyles": true,
 	            "useGriddleIcons": true,
 	            "customRowComponent": null,
+	            "customRowExtraData": null,
 	            "customGridComponent": null,
 	            "customPagerComponent": {},
 	            "customFilterComponent": null,
@@ -711,10 +712,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getCustomGridSection: function getCustomGridSection() {
 	        return React.createElement(this.props.customGridComponent, _extends({ data: this.props.results, className: this.props.customGridComponentClassName }, this.props.gridMetadata));
 	    },
-	    getCustomRowSection: function getCustomRowSection(data, cols, meta, pagingContent) {
-	        return React.createElement('div', null, React.createElement(CustomRowComponentContainer, { data: data, columns: cols, metadataColumns: meta,
+	    getCustomRowSection: function getCustomRowSection(data, extraData, cols, meta, pagingContent) {
+	        return React.createElement('div', null, React.createElement(CustomRowComponentContainer, { data: data, customRowExtraData: extraData, columns: cols, metadataColumns: meta,
 	            className: this.props.customRowComponentClassName, customComponent: this.props.customRowComponent,
-	            style: this.getClearFixStyles() }), this.props.showPager && pagingContent);
+	            style: this.props.useGriddleStyles ? this.getClearFixStyles() : null }), this.props.showPager && pagingContent);
 	    },
 	    getStandardGridSection: function getStandardGridSection(data, cols, meta, pagingContent, hasMorePages) {
 	        var sortProperties = this.getSortObject();
@@ -749,11 +750,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            hasMorePages: hasMorePages,
 	            onRowClick: this.props.onRowClick }));
 	    },
-	    getContentSection: function getContentSection(data, cols, meta, pagingContent, hasMorePages) {
+	    getContentSection: function getContentSection(data, extraData, cols, meta, pagingContent, hasMorePages) {
 	        if (this.props.useCustomGridComponent && this.props.customGridComponent !== null) {
 	            return this.getCustomGridSection();
 	        } else if (this.props.useCustomRowComponent) {
-	            return this.getCustomRowSection(data, cols, meta, pagingContent);
+	            return this.getCustomRowSection(data, extraData, cols, meta, pagingContent);
 	        } else {
 	            return this.getStandardGridSection(data, cols, meta, pagingContent, hasMorePages);
 	        }
@@ -809,7 +810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Grab the paging content if it's to be displayed
 	        var pagingContent = this.getPagingSection(currentPage, maxPage);
 
-	        var resultContent = this.getContentSection(data, cols, meta, pagingContent, hasMorePages);
+	        var resultContent = this.getContentSection(data, this.props.customRowExtraData, cols, meta, pagingContent, hasMorePages);
 
 	        var columnSelector = this.getColumnSelectorSection(keys, cols);
 
@@ -1968,6 +1969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  getDefaultProps: function getDefaultProps() {
 	    return {
 	      "data": [],
+	      "customRowExtraData": {},
 	      "metadataColumns": [],
 	      "className": "",
 	      "customComponent": {}
@@ -1982,7 +1984,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var nodes = this.props.data.map(function (row, index) {
-	      return React.createElement(that.props.customComponent, { data: row, metadataColumns: that.props.metadataColumns, key: index });
+	      return React.createElement(that.props.customComponent, { data: row, customRowExtraData: that.props.customRowExtraData, metadataColumns: that.props.metadataColumns, key: index });
 	    });
 
 	    var footer = this.props.showPager && this.props.pagingContent;
